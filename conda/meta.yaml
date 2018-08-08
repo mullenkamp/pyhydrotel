@@ -1,6 +1,6 @@
 {% set name = "pyhydrotel" %}
-{% set version = "1.0.1" %}
-{% set sha256 = "7e5a4984c18f64ebeb26e6a9366e7b61d30aeaede66598ab72b3fd23facb5e9c" %}
+{% set version = "1.0.2" %}
+{% set sha256 = "71f97bfd59b8d0be0b82ed25162ba73b857cdfeb9f0f34f79d0aa5aa018b71fb" %}
 
 # sha256 is the prefered checksum -- you can get it for a file with:
 #  `openssl sha256 <file name>`.
@@ -37,16 +37,17 @@ requirements:
   run:
     - python
     - pandas
+    - pdsql
 
 test:
   imports:
-    - eto
+    - pyhydrotel
 
 about:
-  home: https://github.com/mullenkamp/ETo
+  home: https://github.com/mullenkamp/pyhydrotel
   license: Apache License 2.0
   license_family: APACHE
-  summary: Functions to estimate reference evapotranspiration
+  summary: Functions to extract data from hydrotel
   description: ""
   doc_url: ''
   dev_url: ''

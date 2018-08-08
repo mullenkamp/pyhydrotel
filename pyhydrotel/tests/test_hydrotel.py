@@ -19,8 +19,8 @@ ts_results_csv = 'ts_results_ex1.csv'
 server = 'SQL2012PROD04'
 database = 'Hydrotel'
 
-mtypes = ['flow', 'swl']
-sites = ['69607', '70105']
+mtypes = ['flow', 'water level', 'rainfall']
+sites = ['69607', '70105', 'L37/0024']
 
 sites_mtypes_ex1 = os.path.join(_module_path, sites_mtypes_ex1_csv)
 ts_results1 = os.path.join(_module_path, ts_results_csv)
