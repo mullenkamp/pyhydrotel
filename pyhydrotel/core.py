@@ -29,6 +29,34 @@ mtypes_col = ['ObjectVariant', 'Name']
 sites_col = ['Site', 'Name', 'ExtSysId']
 
 
+def get_mtypes(server, database):
+    """
+    Function to return a Series of measurement types that can be passed to get_sites_mtypes and get_ts_data. Returns with a count of the frequency the values exist in the database and is sorted by the count.
+
+    Parameters
+    ----------
+    server : str
+        The server where the Hydrotel database lays.
+    database : str
+        The name of the Hydrotel database.
+    mtypes : str or list of str
+        The measurement type(s) of the sites that should be returned.
+    sites : list of str or None
+        The list of sites that should be returned. None returns all sites.
+
+    Returns
+    -------
+    Series
+        MType (index), count
+    """
+    objects1 = rd_sql(server, database, objects_tab, objects_col)
+    objects2 = objects1.groupby('Name').Site.count().sort_values(ascending=False)
+    objects2.name = 'count'
+    objects2.index.name = 'MType'
+
+    return objects2
+
+
 def get_sites_mtypes(server, database, mtypes, sites=None):
     """
     Function to determine the available sites and associates measurement types in the Hydrotel database.
