@@ -1,6 +1,6 @@
 {% set name = "pyhydrotel" %}
-{% set version = "1.0.5" %}
-{% set sha256 = "3d64f4cf7158091f8f74eed361570a54261b6f180405b78e01ca3ce312639cd3" %}
+{% set version = "1.0.6" %}
+{% set sha256 = "79c3dc1ddfcd8865fb8adf54ae89b4d02018a7101454ead01430b6b5e5a46311" %}
 
 # sha256 is the prefered checksum -- you can get it for a file with:
 #  `openssl sha256 <file name>`.

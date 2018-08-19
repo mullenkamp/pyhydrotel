@@ -183,6 +183,9 @@ def get_ts_data(server, database, mtypes, sites, from_date=None, to_date=None, r
     if isinstance(to_date, str):
         site_point = site_point[site_point.FromDate < to_date]
 
+    if site_point.empty:
+        return pd.DataFrame()
+
     ### Pull out the ts data
     site_point1 = site_point[['ExtSiteID', 'MType', 'Point']].copy()
 
