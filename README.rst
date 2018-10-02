@@ -5,7 +5,7 @@ The pyhydrotel package includes functions for extracting sites, measurement type
 
 Installation
 ------------
-ETo can be installed via pip or conda::
+pyhydrotel can be installed via pip or conda::
 
   pip install pyhydrotel
 
