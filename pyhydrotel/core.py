@@ -61,7 +61,7 @@ def get_mtypes(server, database):
 
 def get_sites_mtypes(server, database, mtypes, sites=None):
     """
-    Function to determine the available sites and associates measurement types in the Hydrotel database.
+    Function to determine the available sites and associated measurement types in the Hydrotel database.
 
     Parameters
     ----------
