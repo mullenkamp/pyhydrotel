@@ -10,7 +10,7 @@ here = os.path.abspath(os.path.dirname(__file__))
 name = 'pyhydrotel'
 main_package = 'pyhydrotel'
 # datasets = 'datasets'
-version = '1.0.6'
+version = '1.1.1'
 
 # The below code is for readthedocs. To have sphinx/readthedocs interact with
 # the contained package, readthedocs needs to build the package. But the dependencies

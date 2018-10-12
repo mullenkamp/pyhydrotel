@@ -59,7 +59,7 @@ def get_mtypes(server, database):
     return objects2
 
 
-def get_sites_mtypes(server, database, mtypes, sites=None):
+def get_sites_mtypes(server, database, mtypes=None, sites=None):
     """
     Function to determine the available sites and associated measurement types in the Hydrotel database.
 
@@ -69,9 +69,9 @@ def get_sites_mtypes(server, database, mtypes, sites=None):
         The server where the Hydrotel database lays.
     database : str
         The name of the Hydrotel database.
-    mtypes : str or list of str
+    mtypes : str, list of str, or None
         The measurement type(s) of the sites that should be returned.
-    sites : list of str or None
+    sites : str, list of str, or None
         The list of sites that should be returned. None returns all sites.
 
     Returns
@@ -79,10 +79,16 @@ def get_sites_mtypes(server, database, mtypes, sites=None):
     DataFrame
         ExtSysID, MType, Site, Object, ObjectVariant
     """
+    if isinstance(sites, str):
+        sites = [sites]
 
     if isinstance(mtypes, str):
-        mtypes = [mtypes]
-    elif not isinstance(mtypes, list):
+        mtype_dict = {'Name': [mtypes]}
+    elif isinstance(mtypes, list):
+        mtype_dict = {'Name': mtypes}
+    elif mtypes is None:
+        mtype_dict = None
+    else:
         raise TypeError('mtypes must be either a str, a list of str, or None')
 
     ## Extract hydrotel site numbers for all ECan sites
@@ -106,7 +112,7 @@ def get_sites_mtypes(server, database, mtypes, sites=None):
     sites3 = sites3.drop_duplicates('ExtSysId')
 
     ## objects
-    objects1 = rd_sql(server, database, objects_tab, objects_col, {'Name': mtypes})
+    objects1 = rd_sql(server, database, objects_tab, objects_col, mtype_dict)
     objects1.ExtSysID = objects1.ExtSysID.str.strip()
     objects1.loc[objects1.ExtSysID == '', 'ExtSysID'] = None
 
