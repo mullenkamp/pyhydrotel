@@ -128,7 +128,7 @@ def get_sites_mtypes(server, database, mtypes=None, sites=None):
     sites_ob1.rename(columns={'Name': 'MType'}, inplace=True)
 
     ## Import object/point data
-    point_val = rd_sql(server, database, points_tab, points_col, where_col='Object', where_val=sites_ob1.Object.tolist())
+    point_val = rd_sql(server, database, points_tab, points_col, where_in={'Object': sites_ob1.Object.tolist()})
 
     # Merge
     site_point = pd.merge(sites_ob1, point_val, on='Object')
