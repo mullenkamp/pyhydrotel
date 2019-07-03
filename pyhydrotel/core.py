@@ -128,7 +128,7 @@ def get_sites_mtypes(server, database, mtypes=None, sites=None):
     sites_ob1.rename(columns={'Name': 'MType'}, inplace=True)
 
     ## Import object/point data
-    point_val = rd_sql(server, database, points_tab, points_col, where_in={'Object': sites_ob1.Object.tolist()})
+    point_val = rd_sql(server, database, points_tab, points_col, where_in={'Object': sites_ob1.Object.astype(int).tolist()})
 
     # Merge
     site_point = pd.merge(sites_ob1, point_val, on='Object')
@@ -137,7 +137,7 @@ def get_sites_mtypes(server, database, mtypes=None, sites=None):
     sql_stmt = """select Point, min(DT) as FromDate, max(DT) as ToDate
                 from Hydrotel.dbo.Samples
                 where Point in ({sites})
-                group by Point""".format(sites=str(site_point.Point.tolist())[1:-1])
+                group by Point""".format(sites=str(site_point.Point.astype(int).tolist())[1:-1])
     min_max_point = rd_sql(server, database, stmt=sql_stmt)
 
     ## Combine all together
