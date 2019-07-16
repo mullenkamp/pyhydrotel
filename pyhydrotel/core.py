@@ -6,7 +6,7 @@ Created on Tue Jan 02 10:05:15 2018
 Functions to read hydrotel data.
 """
 import pandas as pd
-from pdsql.mssql import rd_sql, rd_sql_ts
+from pdsql.mssql import rd_sql, rd_sql_ts, to_mssql
 
 ######################################
 ### Parameters
@@ -219,3 +219,63 @@ def get_ts_data(server, database, mtypes, sites, from_date=None, to_date=None, r
         tsdata = tsdata.unstack([0, 1])
 
     return tsdata
+
+
+def create_site_mtype(server, database, site, ref_point, new_mtype):
+    """
+    Function to create a new mtype for a specific site. A reference point number of an existing mtype of the same site must be used for creation. Run get_sites_mtypes to find a good reference point.
+
+    Parameters
+    ----------
+    server : str
+        The server where the Hydrotel database lays.
+    database : str
+        The name of the Hydrotel database.
+    site : str
+        The site to create the new mtype on.
+    ref_point : int
+        The reference point from another mtype on the same site.
+    new_mtype : str
+        The new mtype name. Must be unique for the associated site.
+
+    Returns
+    -------
+    DataFrame
+        New object and point values extracted by the get_sites_mtypes function.
+    """
+    ## Checks
+    site_mtypes = get_sites_mtypes(server, database, sites=site).reset_index()
+
+    if not (site_mtypes.Point == ref_point).any():
+        raise ValueError('model_point must be a Point that exists within the mtypes of the site')
+    if (site_mtypes.MType == new_mtype.lower()).any():
+        raise ValueError('new_name already exists as an mtype, please use a different name')
+
+    ## Import object/point data
+    point_val = rd_sql(server, database, points_tab, where_in={'Point': [ref_point]})
+    obj_val = rd_sql(server, database, objects_tab, where_in={'Object': point_val.Object.tolist()})
+
+    treeindex1 = int(rd_sql(server, database, stmt='select max(TreeIndex) from {tab} where Site = {site}'.format(tab=objects_tab, site=int(obj_val.Site))).iloc[0])
+
+    ## Assign new object data
+    obj_val2 = obj_val.drop('Object', axis=1).copy()
+    obj_val2['Name'] = new_mtype
+    obj_val2['TreeIndex'] = treeindex1 + 1
+
+    to_mssql(obj_val2, server, database, objects_tab)
+
+    ## Find out what the new object value is
+    new_obj = int(rd_sql(server, database, objects_tab, where_in={'Site': obj_val.Site.tolist(), 'Name': [new_mtype]}).Object)
+
+    ## Assign new point data
+    point_val2 = point_val.drop('Point', axis=1).copy()
+    point_val2['Name'] = new_mtype
+    point_val2['Object'] = new_obj
+
+    to_mssql(point_val2, server, database, points_tab)
+
+    ## Return new values
+    site_mtypes = get_sites_mtypes(server, database, sites=site, mtypes=new_mtype)
+
+    return site_mtypes
+
